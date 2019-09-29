@@ -8,18 +8,17 @@ import java.time.LocalDateTime;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author gudeck
  */
-public class Mensagem implements Serializable{
-    
+public class Mensagem implements Serializable {
+
     private LocalDateTime horario;
     private Usuario usuario;
-    private String texto;    
+    private String texto;
 
-    public Mensagem(LocalDateTime horario,Usuario usuario, String texto) {
+    public Mensagem(LocalDateTime horario, Usuario usuario, String texto) {
         this.horario = horario;
         this.usuario = usuario;
         this.texto = texto;
@@ -32,7 +31,7 @@ public class Mensagem implements Serializable{
     public void setHorario(LocalDateTime horario) {
         this.horario = horario;
     }
-    
+
     public Usuario getUsuario() {
         return usuario;
     }
@@ -48,5 +47,5 @@ public class Mensagem implements Serializable{
     public void setTexto(String texto) {
         this.texto = texto;
     }
-    
+
 }

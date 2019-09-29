@@ -12,7 +12,7 @@ import java.util.Random;
  *
  * @author gudeck
  */
-public class Usuario implements Serializable{
+public class Usuario implements Serializable {
 
     public Usuario(String nome) {
         Random rand = new Random();

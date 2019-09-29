@@ -15,8 +15,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author gudeck
@@ -24,13 +22,14 @@ import java.util.logging.Logger;
 public class TCPServidor {
 
     public static void main(String[] args) {
-        ServerSocket serverSocket;
-        Socket socket;
+        Mensagem mensagem;
         InputStream inputStream;
+        List<Mensagem> mensagens = new ArrayList<>();
         ObjectInputStream objectInputStream;
         OutputStream outputStream;
         ObjectOutputStream objectOutputStream;
-        List<Mensagem> mensagens = new ArrayList<>();
+        ServerSocket serverSocket;
+        Socket socket;
 
         try {
             serverSocket = new ServerSocket(7777);
@@ -39,7 +38,10 @@ public class TCPServidor {
                 inputStream = socket.getInputStream();
                 objectInputStream = new ObjectInputStream(inputStream);
 
-                mensagens.add((Mensagem) objectInputStream.readObject());
+                mensagem = (Mensagem) objectInputStream.readObject();
+                if (!mensagem.getTexto().isEmpty()) {
+                    mensagens.add(mensagem);
+                }
 
                 outputStream = socket.getOutputStream();
                 objectOutputStream = new ObjectOutputStream(outputStream);

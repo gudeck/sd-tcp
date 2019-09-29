@@ -16,7 +16,7 @@ import java.util.List;
  *
  * @author gudeck
  */
-public class JDGChat extends javax.swing.JDialog {
+public class JDGChat extends javax.swing.JDialog implements Runnable {
 
     private final ControleVisao controladorVisao;
     private Usuario usuario;
@@ -30,8 +30,10 @@ public class JDGChat extends javax.swing.JDialog {
         initComponents();
         this.controladorVisao = controlador;
         this.usuario = usuario;
+        this.setTitle("ID: " + usuario.getId() + ", Nome: " + usuario.getNome());
         lblErro.setVisible(false);
         txtHistorico.setEditable(false);
+        new Thread(this).start();
     }
 
     /**
@@ -137,22 +139,14 @@ public class JDGChat extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnEnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnviarActionPerformed
+
         List<Mensagem> mensagens;
-        DateTimeFormatter dtf;
         if (txtMensagem.getText().isEmpty())
             lblErro.setVisible(true);
         else {
             lblErro.setVisible(false);
-            txtHistorico.setText("");
             mensagens = TCPCliente.enviaMensagem(this.usuario, txtMensagem.getText());
-            dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-            if (mensagens != null) {
-                mensagens.forEach((mensagem) -> txtHistorico.append(
-                        dtf.format(mensagem.getHorario()) + " "
-                        + mensagem.getUsuario().getNome() + ": "
-                        + mensagem.getTexto() + "\n"
-                ));
-            }
+            atualizaHistorico(mensagens);
             txtMensagem.setText("");
             txtMensagem.requestFocus();
         }
@@ -169,4 +163,31 @@ public class JDGChat extends javax.swing.JDialog {
     private javax.swing.JTextArea txtHistorico;
     private javax.swing.JTextArea txtMensagem;
     // End of variables declaration//GEN-END:variables
+
+    public void atualizaHistorico(List<Mensagem> mensagens) {
+        DateTimeFormatter dtf;
+        txtHistorico.setText("");
+        dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        if (mensagens != null) {
+            mensagens.forEach((mensagem) -> txtHistorico.append(
+                    dtf.format(mensagem.getHorario()) + " "
+                    + mensagem.getUsuario().getNome() + ": "
+                    + mensagem.getTexto() + "\n"
+            ));
+        }
+    }
+
+    @Override
+    public void run() {
+
+        while (true) {
+            try {
+                Thread.sleep(10000);
+                List<Mensagem> mensagens = TCPCliente.enviaMensagem(this.usuario, "");
+                atualizaHistorico(mensagens);
+            } catch (InterruptedException ex) {
+                System.out.println("Erro thread: " + ex.getMessage());
+            }
+        }
+    }
 }
