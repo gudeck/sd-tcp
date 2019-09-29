@@ -5,6 +5,7 @@
  */
 package control;
 
+import domain.Usuario;
 import vision.JDGChat;
 import vision.JFRTelaInicial;
 
@@ -59,8 +60,8 @@ public class ControleVisao {
         telaInicial.setVisible(true);
     }
 
-    public void chat() {
-        JDGChat chat = new JDGChat(telaInicial, true, this);
+    public void chat(String nome) {
+        JDGChat chat = new JDGChat(telaInicial, true, this, new Usuario(nome));
         chat.setLocationRelativeTo(null);
         chat.setResizable(false);
         chat.setVisible(true);

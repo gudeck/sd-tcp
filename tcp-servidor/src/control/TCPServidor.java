@@ -13,6 +13,8 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,28 +24,31 @@ import java.util.logging.Logger;
 public class TCPServidor {
 
     public static void main(String[] args) {
-        ServerSocket ss;
+        ServerSocket serverSocket;
         Socket socket;
         InputStream inputStream;
         ObjectInputStream objectInputStream;
         OutputStream outputStream;
         ObjectOutputStream objectOutputStream;
-        
-        try {
-            ss = new ServerSocket(7777);
-            socket = ss.accept();
-            inputStream = socket.getInputStream();
-            objectInputStream = new ObjectInputStream(inputStream);
-          
-            outputStream = socket.getOutputStream();
-            objectOutputStream = new ObjectOutputStream(outputStream);
-            objectOutputStream.writeObject(new Mensagem(null, null, null, "Pao"));
-            
-            ss.close();
-            socket.close();
-        } catch (IOException ex) {
-            Logger.getLogger(TCPServidor.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        List<Mensagem> mensagens = new ArrayList<>();
 
+        try {
+            serverSocket = new ServerSocket(7777);
+            while (true) {
+                socket = serverSocket.accept();
+                inputStream = socket.getInputStream();
+                objectInputStream = new ObjectInputStream(inputStream);
+
+                mensagens.add((Mensagem) objectInputStream.readObject());
+
+                outputStream = socket.getOutputStream();
+                objectOutputStream = new ObjectOutputStream(outputStream);
+                objectOutputStream.writeObject(mensagens);
+
+                socket.close();
+            }
+        } catch (ClassNotFoundException | IOException ex) {
+            System.err.println("Erro servidor: " + ex.getMessage());
+        }
     }
 }

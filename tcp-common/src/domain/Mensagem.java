@@ -16,13 +16,11 @@ import java.time.LocalDateTime;
 public class Mensagem implements Serializable{
     
     private LocalDateTime horario;
-    private Integer codigo;
     private Usuario usuario;
     private String texto;    
 
-    public Mensagem(LocalDateTime horario, Integer codigo, Usuario usuario, String texto) {
+    public Mensagem(LocalDateTime horario,Usuario usuario, String texto) {
         this.horario = horario;
-        this.codigo = codigo;
         this.usuario = usuario;
         this.texto = texto;
     }
@@ -34,15 +32,7 @@ public class Mensagem implements Serializable{
     public void setHorario(LocalDateTime horario) {
         this.horario = horario;
     }
-
-    public Integer getCodigo() {
-        return codigo;
-    }
-
-    public void setCodigo(Integer codigo) {
-        this.codigo = codigo;
-    }
-
+    
     public Usuario getUsuario() {
         return usuario;
     }

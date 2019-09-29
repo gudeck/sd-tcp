@@ -88,9 +88,9 @@ public class JFRTelaInicial extends javax.swing.JFrame {
     private void btnEntrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEntrarActionPerformed
         if (txtUsuario.getText().isEmpty())
             lblErro.setVisible(true);
-        else{
+        else {
             lblErro.setVisible(false);
-            controladorVisao.chat();
+            controladorVisao.chat(txtUsuario.getText());
         }
     }//GEN-LAST:event_btnEntrarActionPerformed
 

@@ -6,46 +6,41 @@
 package control;
 
 import domain.Mensagem;
+import domain.Usuario;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author gudeck
  */
 public class TCPCliente {
 
-    public static void main(String[] args) {
+    public static List<Mensagem> enviaMensagem(Usuario usuario, String mensagem) {
         Socket socket;
         OutputStream outputStream;
         ObjectOutputStream objectOutputStream;
         InputStream inputStream;
         ObjectInputStream objectInputStream;
-        Mensagem mensagem;
+
         try {
             socket = new Socket("localhost", 7777);
-            mensagem = null;
-            
+
             outputStream = socket.getOutputStream();
             objectOutputStream = new ObjectOutputStream(outputStream);
-            objectOutputStream.writeObject(mensagem);
-            
+            objectOutputStream.writeObject(new Mensagem(LocalDateTime.now(), usuario, mensagem));
+
             inputStream = socket.getInputStream();
             objectInputStream = new ObjectInputStream(inputStream);
-            mensagem = (Mensagem) objectInputStream.readObject();
-            
-            System.out.println(mensagem.getTexto());
-            socket.close();
-        } catch (IOException ex) {
-            Logger.getLogger(TCPCliente.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(TCPCliente.class.getName()).log(Level.SEVERE, null, ex);
+            return (List<Mensagem>) objectInputStream.readObject();
+        } catch (ClassNotFoundException | IOException ex) {
+            System.err.println("Erro cliente: " + ex.getMessage());
         }
-
+        return null;
     }
 }

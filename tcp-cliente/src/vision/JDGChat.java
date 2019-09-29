@@ -6,6 +6,11 @@
 package vision;
 
 import control.ControleVisao;
+import control.TCPCliente;
+import domain.Mensagem;
+import domain.Usuario;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 /**
  *
@@ -14,16 +19,19 @@ import control.ControleVisao;
 public class JDGChat extends javax.swing.JDialog {
 
     private final ControleVisao controladorVisao;
+    private Usuario usuario;
 
     /**
      * Creates new form JDGChat
      */
     public JDGChat(java.awt.Frame parent, boolean modal,
-            ControleVisao controlador) {
+            ControleVisao controlador, Usuario usuario) {
         super(parent, modal);
         initComponents();
         this.controladorVisao = controlador;
+        this.usuario = usuario;
         lblErro.setVisible(false);
+        txtHistorico.setEditable(false);
     }
 
     /**
@@ -129,10 +137,25 @@ public class JDGChat extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnEnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnviarActionPerformed
+        List<Mensagem> mensagens;
+        DateTimeFormatter dtf;
         if (txtMensagem.getText().isEmpty())
             lblErro.setVisible(true);
-        else
+        else {
             lblErro.setVisible(false);
+            txtHistorico.setText("");
+            mensagens = TCPCliente.enviaMensagem(this.usuario, txtMensagem.getText());
+            dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+            if (mensagens != null) {
+                mensagens.forEach((mensagem) -> txtHistorico.append(
+                        dtf.format(mensagem.getHorario()) + " "
+                        + mensagem.getUsuario().getNome() + ": "
+                        + mensagem.getTexto() + "\n"
+                ));
+            }
+            txtMensagem.setText("");
+            txtMensagem.requestFocus();
+        }
     }//GEN-LAST:event_btnEnviarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
