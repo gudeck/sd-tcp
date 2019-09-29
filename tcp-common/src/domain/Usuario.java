@@ -5,11 +5,20 @@
  */
 package domain;
 
+import java.io.Serializable;
+import java.util.Random;
+
 /**
  *
  * @author gudeck
  */
-public class Usuario {
+public class Usuario implements Serializable{
+
+    public Usuario(String nome) {
+        Random rand = new Random();
+        this.id = rand.nextInt(5000);
+        this.nome = nome;
+    }
 
     private Integer id;
     private String nome;

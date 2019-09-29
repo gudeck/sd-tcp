@@ -25,3 +25,4 @@ hs_err_pid*
 /tcp-cliente/build/
 /tcp-cliente/dist/
 /tcp-servidor/build/
+/tcp-common/build/

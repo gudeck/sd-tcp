@@ -5,13 +5,15 @@
  */
 package control;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.EOFException;
+import domain.Mensagem;
 import java.io.IOException;
-import java.net.InetAddress;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.net.Socket;
-import java.net.UnknownHostException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author gudeck
@@ -19,37 +21,31 @@ import java.net.UnknownHostException;
 public class TCPCliente {
 
     public static void main(String[] args) {
-
-        InetAddress nomeHost = null;
-        Socket socket = null;
-        String mensagem = "pao";
+        Socket socket;
+        OutputStream outputStream;
+        ObjectOutputStream objectOutputStream;
+        InputStream inputStream;
+        ObjectInputStream objectInputStream;
+        Mensagem mensagem;
         try {
-            int serverPort = 7896;
-            nomeHost = InetAddress.getLocalHost();
-            socket = new Socket(nomeHost, serverPort);
+            socket = new Socket("localhost", 7777);
+            mensagem = null;
+            
+            outputStream = socket.getOutputStream();
+            objectOutputStream = new ObjectOutputStream(outputStream);
+            objectOutputStream.writeObject(mensagem);
+            
+            inputStream = socket.getInputStream();
+            objectInputStream = new ObjectInputStream(inputStream);
+            mensagem = (Mensagem) objectInputStream.readObject();
+            
+            System.out.println(mensagem.getTexto());
+            socket.close();
+        } catch (IOException ex) {
+            Logger.getLogger(TCPCliente.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(TCPCliente.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
-            DataInputStream in = new DataInputStream(socket.getInputStream());
-            DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-
-            out.writeUTF(mensagem); //UTF é uma codificação de string.
-
-            String data = in.readUTF();
-            System.out.println("Recebido: " + data);
-        } catch (UnknownHostException e) {
-            System.out.println("Socket: " + e.getMessage());
-        } catch (EOFException e) {
-            System.out.println("EOF: " + e.getMessage());
-        } catch (IOException e) {
-            System.out.println("IO: " + e.getMessage());
-        } finally {
-            if (socket != null) {
-                try {
-                    socket.close();
-                } catch (IOException e) {
-                    /*close falhou*/
-                }
-            }
-
-        }//finally
     }
 }

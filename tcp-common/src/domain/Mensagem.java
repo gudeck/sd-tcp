@@ -1,6 +1,7 @@
 package domain;
 
-import java.util.Calendar;
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -12,18 +13,25 @@ import java.util.Calendar;
  *
  * @author gudeck
  */
-public class Mensagem {
+public class Mensagem implements Serializable{
     
-    private Calendar horario;
+    private LocalDateTime horario;
     private Integer codigo;
     private Usuario usuario;
     private String texto;    
 
-    public Calendar getHorario() {
+    public Mensagem(LocalDateTime horario, Integer codigo, Usuario usuario, String texto) {
+        this.horario = horario;
+        this.codigo = codigo;
+        this.usuario = usuario;
+        this.texto = texto;
+    }
+
+    public LocalDateTime getHorario() {
         return horario;
     }
 
-    public void setHorario(Calendar horario) {
+    public void setHorario(LocalDateTime horario) {
         this.horario = horario;
     }
 

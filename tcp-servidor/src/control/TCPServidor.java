@@ -5,11 +5,16 @@
  */
 package control;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import domain.Mensagem;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author gudeck
@@ -17,22 +22,28 @@ import java.net.Socket;
 public class TCPServidor {
 
     public static void main(String[] args) {
+        ServerSocket ss;
+        Socket socket;
+        InputStream inputStream;
+        ObjectInputStream objectInputStream;
+        OutputStream outputStream;
+        ObjectOutputStream objectOutputStream;
+        
         try {
-            int serverPort = 7896;
-            DataInputStream in;
-            DataOutputStream out;
-            ServerSocket listenSocket = new ServerSocket(serverPort);
-
-            while (true) {
-                Socket clientSocket = listenSocket.accept();
-                in = new DataInputStream(clientSocket.getInputStream());
-                out = new DataOutputStream(clientSocket.getOutputStream());
-                String data = in.readUTF();
-                data = data.toUpperCase();
-                out.writeUTF(data);
-            }//while
-        } catch (IOException e) {
-            System.out.println("Erro: " + e.getMessage());
+            ss = new ServerSocket(7777);
+            socket = ss.accept();
+            inputStream = socket.getInputStream();
+            objectInputStream = new ObjectInputStream(inputStream);
+          
+            outputStream = socket.getOutputStream();
+            objectOutputStream = new ObjectOutputStream(outputStream);
+            objectOutputStream.writeObject(new Mensagem(null, null, null, "Pao"));
+            
+            ss.close();
+            socket.close();
+        } catch (IOException ex) {
+            Logger.getLogger(TCPServidor.class.getName()).log(Level.SEVERE, null, ex);
         }
+
     }
 }
